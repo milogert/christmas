@@ -20,6 +20,8 @@ apply plugin: 'kotlin' // Required for Kotlin integration
 apply plugin: "kotlin-spring" // See https://kotlinlang.org/docs/reference/compiler-plugins.html#kotlin-spring-compiler-plugin
 apply plugin: 'org.springframework.boot'
 
+//mainClassName = "com.milogert.christmas.ChristmasApp"
+
 jar {
     baseName = 'gs-rest-service'
     version = '0.1.0'
@@ -27,15 +29,27 @@ jar {
 
 repositories {
     jcenter()
-    maven { url "https://jitpack.io" }
+}
+
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version" // Required for Kotlin integration
     compile 'org.springframework.boot:spring-boot-starter-web'
+    compile("org.springframework.boot:spring-boot-devtools")
 
     // Database.
-    compile 'ninja.sakib:PultusORM:v1.7'
+    compile 'com.github.JetBrains:Exposed:0.9.1'
+
+    // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
+    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0.1'
+
+    // https://mvnrepository.com/artifact/com.h2database/h2
+    compile group: 'com.h2database', name: 'h2', version: '1.4.196'
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

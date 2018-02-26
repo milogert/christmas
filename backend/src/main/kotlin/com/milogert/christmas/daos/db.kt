@@ -1,5 +1,10 @@
 package com.milogert.christmas.daos
 
-import ninja.sakib.pultusorm.core.PultusORM
+import org.jetbrains.exposed.sql.Transaction
+import org.jetbrains.exposed.sql.transactions.TransactionManager
+import java.sql.Connection
 
-val orm: PultusORM = PultusORM("christmas.db")    // DB will take place in user.home directory
+
+val name: String = "jdbc:sqlite:./christmas.db"
+
+fun <T> transaction(statement: Transaction.() -> T): T = org.jetbrains.exposed.sql.transactions.transaction(Connection.TRANSACTION_SERIALIZABLE, 3, statement)
