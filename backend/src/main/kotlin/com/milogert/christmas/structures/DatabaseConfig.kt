@@ -9,8 +9,12 @@ import org.jetbrains.exposed.sql.Table
  * Table.
  */
 object People : IntIdTable() {
-    var name = varchar("name", 50).uniqueIndex()
-    var email = varchar("email", 200).uniqueIndex()
+    var name = varchar("name", 50)
+    var email = varchar("email", 200)
+
+    init {
+        YearConfigs.index(true, name, email)
+    }
 }
 
 /**
@@ -92,7 +96,7 @@ class YearConfig(year: EntityID<Int>) : IntEntity(year) {
 object SantaReceivers : IntIdTable() {
     var santaId = reference("santa_id", People)
     var receiverId = reference("receiver_id", People)
-    var year = entityId("year", YearConfigs).references(YearConfigs.id)
+    var year = reference("year", YearConfigs)
 
     init {
         index(true, santaId, receiverId, year)

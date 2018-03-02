@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.and
 import java.util.*
 
 class PersonDao() {
-    val wishlistDao = WishlistDao()
+    private val wishlistDao = WishlistDao()
 
     /**
      * Create person.
@@ -59,11 +59,11 @@ class PersonDao() {
     }
 
     // Update.
-    fun update(oId: Int, nName: String, nEmail: String) = transaction {
+    fun update(oId: Int, name: String, email: String) = transaction {
         val old = Person.get(oId)
 
-        old.name = nName
-        old.email = nEmail
+        old.name = name
+        old.email = email
     }
 
     fun createReceiver(santaId: Int, receiverId: Int, year: Int) : List<Person> = transaction {
@@ -71,7 +71,7 @@ class PersonDao() {
             SantaReceiver.find {
                 (SantaReceivers.santaId eq santaId) and
                 (SantaReceivers.receiverId eq receiverId) and
-                (SantaReceivers.year eq YearConfig.find { YearConfigs.year eq year }.first().year)
+                (SantaReceivers.year eq YearConfig.find { YearConfigs.year eq year }.first().id)
             }.count() <= 0
         ) {
             SantaReceiver.new {
@@ -79,20 +79,17 @@ class PersonDao() {
                 this.receiverId = Person[receiverId]
                 this.year = YearConfig.find { YearConfigs.year eq year }.first() // Should only be one.
             }
+        } else
+        {
+            println("Found santa-reciever pair: $santaId - $receiverId")
         }
 
         return@transaction Arrays.asList(getPersonById(santaId), getPersonById(receiverId))
     }
 
     fun getReceiversBySanta(santaId: Int) : Iterable<Person> = transaction {
-        SantaReceiver.find { SantaReceivers.santaId eq 1 }.map { x -> x.receiverId }.toList()
+        SantaReceiver.find { SantaReceivers.santaId eq santaId }.map { x -> x.receiverId }.toList()
     }
 
     fun getAllPeople(): Iterable<Person> = transaction { Person.all() }
 }
-
-
-
-/*
-@here I am kicking off the report out as I need to head out: I was able to fully integrate the ORM I landed on and I started working on the daos. In the process I had to re-do many of the table configurations since I kept learning new ways to work with ORM. I have most of the CRUD functionality working currently and next time I will continue on that.
- */

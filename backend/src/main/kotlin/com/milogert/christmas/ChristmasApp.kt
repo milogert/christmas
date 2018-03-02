@@ -32,11 +32,13 @@ fun main(args: Array<String>) {
         create(People, WishlistItems, YearConfigs, SantaReceivers)
 
         // Add a new year and a new secret year.
-        if (YearConfig.find { YearConfigs.id eq k_year }.count() <= 0) {
+        if (YearConfig.find { YearConfigs.year eq k_year }.count() <= 0) {
             YearConfig.new {
                 year = k_year
                 isSecret = false
             }
+        } else {
+            println("Year was found: $k_year")
         }
     }
 }
