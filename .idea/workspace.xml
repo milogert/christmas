@@ -2,24 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="403f58a1-a545-4053-9dd7-e42b66d6391c" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/filters/CorsFilter.kt" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_fasterxml_jackson_core_jackson_databind_2_8_8.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_springframework_spring_web_4_3_9_RELEASE.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/backend/build.gradle" afterPath="$PROJECT_DIR$/backend/build.gradle" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/ChristmasApp.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/ChristmasApp.kt" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/GreetingController.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/MainController.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/PersonController.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/PersonController.kt" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/WishlistController.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/WishlistController.kt" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/PersonDao.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/PersonDao.kt" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/WishlistDao.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/WishlistDao.kt" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/db.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/db.kt" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/structures/DatabaseConfig.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/structures/DatabaseConfig.kt" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/structures/Greeting.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/frontend/elm-package.json" afterPath="$PROJECT_DIR$/frontend/elm-package.json" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Main.elm" afterPath="$PROJECT_DIR$/frontend/src/Main.elm" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/milo.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -172,7 +157,7 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="PersonController.kt" pinned="false" current-in-tab="true">
+          <file leaf-file-name="PersonController.kt" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/PersonController.kt">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="255">
@@ -180,6 +165,16 @@
                   <folding>
                     <element signature="e#44#282#0" expanded="true" />
                   </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/.gitignore">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="225">
+                  <caret line="15" column="6" lean-forward="false" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -203,6 +198,22 @@
                   <caret line="9" column="8" lean-forward="false" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
                   <folding>
                     <element signature="e#37#228#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="workspace.xml" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="0">
+                  <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#91776#91780#0" expanded="true" />
+                    <element signature="e#92522#92526#0" expanded="true" />
+                    <element signature="e#92791#92795#0" expanded="true" />
+                    <element signature="e#93068#93072#0" expanded="true" />
+                    <element signature="e#93325#93329#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -912,7 +923,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/backend/build.gradle" />
         <option value="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/filters/CorsFilter.kt" />
         <option value="$PROJECT_DIR$/frontend/elm-package.json" />
@@ -924,6 +934,7 @@
         <option value="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/WishlistController.kt" />
         <option value="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/db.kt" />
         <option value="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/PersonController.kt" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -977,92 +988,6 @@
             <path>
               <item name="christmas" type="b2602c69:ProjectViewProjectNode" />
               <item name="christmas" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="christmas" type="b2602c69:ProjectViewProjectNode" />
-              <item name="christmas" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="backend" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="christmas" type="b2602c69:ProjectViewProjectNode" />
-              <item name="christmas" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="backend" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="christmas" type="b2602c69:ProjectViewProjectNode" />
-              <item name="christmas" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="backend" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="christmas" type="b2602c69:ProjectViewProjectNode" />
-              <item name="christmas" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="backend" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="kotlin" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="christmas" type="b2602c69:ProjectViewProjectNode" />
-              <item name="christmas" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="backend" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="kotlin" type="462c0819:PsiDirectoryNode" />
-              <item name="christmas" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="christmas" type="b2602c69:ProjectViewProjectNode" />
-              <item name="christmas" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="backend" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="kotlin" type="462c0819:PsiDirectoryNode" />
-              <item name="christmas" type="462c0819:PsiDirectoryNode" />
-              <item name="controllers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="christmas" type="b2602c69:ProjectViewProjectNode" />
-              <item name="christmas" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="backend" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="kotlin" type="462c0819:PsiDirectoryNode" />
-              <item name="christmas" type="462c0819:PsiDirectoryNode" />
-              <item name="daos" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="christmas" type="b2602c69:ProjectViewProjectNode" />
-              <item name="christmas" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="backend" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="kotlin" type="462c0819:PsiDirectoryNode" />
-              <item name="christmas" type="462c0819:PsiDirectoryNode" />
-              <item name="filters" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="christmas" type="b2602c69:ProjectViewProjectNode" />
-              <item name="christmas" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="backend" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="kotlin" type="462c0819:PsiDirectoryNode" />
-              <item name="christmas" type="462c0819:PsiDirectoryNode" />
-              <item name="structures" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="christmas" type="b2602c69:ProjectViewProjectNode" />
-              <item name="christmas" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="frontend" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="christmas" type="b2602c69:ProjectViewProjectNode" />
-              <item name="christmas" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="frontend" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -1238,7 +1163,21 @@
       <option name="project" value="LOCAL" />
       <updated>1520104761181</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Backend code cleanup">
+      <created>1520117075892</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1520117075892</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Frontend work&#10;&#10;- Json decoding works.&#10;- Weird error where I am not getting the correct data from the back or&#10;  at least rendered.">
+      <created>1520117136431</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1520117136431</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1252,8 +1191,8 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3997879" sideWeight="0.5074074" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979852" sideWeight="0.49786097" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3997879" sideWeight="0.51339287" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979852" sideWeight="0.4888393" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32979852" sideWeight="0.5141369" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32979852" sideWeight="0.4858631" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15026738" sideWeight="0.5" order="9" side_tool="false" content_ui="combo" />
@@ -1263,7 +1202,7 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973261" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3997879" sideWeight="0.48660713" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3997879" sideWeight="0.48660713" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1308,7 +1247,9 @@
     <MESSAGE value="Updated the gitignore to improve merging later" />
     <MESSAGE value="Backend changes&#10;&#10;- New: WishlistController.&#10;&#10;- Update: database structure.&#10;- Update: WishlistDao, PersonController, PersonDao.&#10;- Update: Added logging to all database transactions.&#10;&#10;- Remove: YearController as it does nothing." />
     <MESSAGE value="Remove the workspace.xml" />
-    <option name="LAST_COMMIT_MESSAGE" value="Remove the workspace.xml" />
+    <MESSAGE value="Backend code cleanup" />
+    <MESSAGE value="Frontend work&#10;&#10;- Json decoding works.&#10;- Weird error where I am not getting the correct data from the back or&#10;  at least rendered." />
+    <option name="LAST_COMMIT_MESSAGE" value="Frontend work&#10;&#10;- Json decoding works.&#10;- Weird error where I am not getting the correct data from the back or&#10;  at least rendered." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1427,7 +1368,11 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1520116796695" expanded="true" signature="117712:117729" ph="..." />
+            <element signature="e#91776#91780#0" expanded="true" />
+            <element signature="e#92522#92526#0" expanded="true" />
+            <element signature="e#92791#92795#0" expanded="true" />
+            <element signature="e#93068#93072#0" expanded="true" />
+            <element signature="e#93325#93329#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1490,16 +1435,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1520116796695" expanded="true" signature="117712:117729" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.idea/dictionaries/milo.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1526,14 +1461,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="9" lean-forward="false" selection-start-line="27" selection-start-column="9" selection-end-line="27" selection-end-column="9" />
           <folding />
         </state>
       </provider>
@@ -1731,6 +1658,28 @@
           <caret line="17" column="3" lean-forward="true" selection-start-line="17" selection-start-column="3" selection-end-line="17" selection-end-column="3" />
           <folding>
             <element signature="e#44#282#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="6" lean-forward="false" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#91776#91780#0" expanded="true" />
+            <element signature="e#92522#92526#0" expanded="true" />
+            <element signature="e#92791#92795#0" expanded="true" />
+            <element signature="e#93068#93072#0" expanded="true" />
+            <element signature="e#93325#93329#0" expanded="true" />
           </folding>
         </state>
       </provider>
