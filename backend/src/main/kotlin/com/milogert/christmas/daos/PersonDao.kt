@@ -43,27 +43,29 @@ class PersonDao() {
      * Gets a person by id. Optionally fills in the person based on other data.
      */
     fun getPersonById(id: Int, fill: Boolean = true) = transaction {
-        val person = Person.get(id)
+        val person = Person[id]
 
         if (fill) {
-            person.wishlist = wishlistDao.getWishlistByOwnerId(person.id.value)
+            person.wishlist = wishlistDao.getWishlistByOwnerId(person.id.value).map(WishlistItem::render)
 
             // Map the receivers.
-            person.receivers = getReceiversBySanta(person.id.value).map { x -> x.render() }
+            person.receivers = getReceiversBySanta(person.id.value).map(Person::render)
 
             // Map the claimed items.
-            person.claimedItems = wishlistDao.getWishlistByClaimedId(person.id.value)
+            person.claimedItems = wishlistDao.getWishlistByClaimedId(person.id.value).map(WishlistItem::render)
         }
 
         return@transaction person
     }
 
     // Update.
-    fun update(oId: Int, name: String, email: String) = transaction {
-        val old = Person.get(oId)
+    fun update(id: Int, name: String?, email: String?) : Person.Render = transaction {
+        val old = Person[id]
 
-        old.name = name
-        old.email = email
+        old.name = name ?: old.name
+        old.email = email ?: old.email
+
+        return@transaction old.render()
     }
 
     fun createReceiver(santaId: Int, receiverId: Int, year: Int) : List<Person> = transaction {
@@ -91,5 +93,5 @@ class PersonDao() {
         SantaReceiver.find { SantaReceivers.santaId eq santaId }.map { x -> x.receiverId }.toList()
     }
 
-    fun getAllPeople(): Iterable<Person> = transaction { Person.all() }
+    fun getAllPeople(): Iterable<Person> = transaction { return@transaction Person.all() }
 }

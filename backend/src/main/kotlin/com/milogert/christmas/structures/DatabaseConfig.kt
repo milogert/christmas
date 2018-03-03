@@ -26,19 +26,20 @@ class Person(id: EntityID<Int>) : IntEntity(id) {
     var name by People.name
     var email by People.email
 
-    var wishlist: Iterable<WishlistItem> = ArrayList<WishlistItem>()
+    var wishlist: Iterable<WishlistItem.Render> = ArrayList<WishlistItem.Render>()
     var receivers: Iterable<Person.Render> = ArrayList<Person.Render>()
-    var claimedItems: Iterable<WishlistItem> = ArrayList<WishlistItem>()
+    var claimedItems: Iterable<WishlistItem.Render> = ArrayList<WishlistItem.Render>()
 
     data class Render(
+            val id: Int,
             val name: String,
             val email: String,
-            val wishlist: Iterable<WishlistItem>,
+            val wishlist: Iterable<WishlistItem.Render>,
             val receivers: Iterable<Person.Render>,
-            val claimedItems: Iterable<WishlistItem>
+            val claimedItems: Iterable<WishlistItem.Render>
     )
     fun render() : Person.Render {
-        return Person.Render(this.name, this.email, this.wishlist, this.receivers, this.claimedItems)
+        return Person.Render(this.id.value, this.name, this.email, this.wishlist, this.receivers, this.claimedItems)
     }
 }
 
@@ -48,7 +49,7 @@ class Person(id: EntityID<Int>) : IntEntity(id) {
 object WishlistItems: IntIdTable() {
     var owner = reference("owner", People)
     var text = varchar("text", 1000)
-    var claimed = bool("claimed")
+    var claimed = bool("claimed").default(false)
     var claimedBy = reference("claimed_by", People).nullable()
     var year = reference("year", YearConfigs)
 }
@@ -64,6 +65,18 @@ class WishlistItem(id: EntityID<Int>) : IntEntity(id) {
     var claimed by WishlistItems.claimed
     var claimedBy by Person optionalReferencedOn WishlistItems.claimedBy
     var year by YearConfig referencedOn WishlistItems.year
+
+    data class Render(
+            val id: Int,
+            val owner: Person.Render,
+            val text: String,
+            val claimed: Boolean,
+            val claimedBy: Person.Render?,
+            val year: Int
+    )
+    fun render() : WishlistItem.Render {
+        return WishlistItem.Render(this.id.value, this.owner.render(), this.text, this.claimed, this.claimedBy?.render(), this.year.year)
+    }
 }
 
 /**
