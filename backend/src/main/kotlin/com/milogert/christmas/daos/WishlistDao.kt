@@ -1,65 +1,53 @@
 package com.milogert.christmas.daos
 
-import com.milogert.christmas.structures.Person
-import com.milogert.christmas.structures.WishlistItem
-import ninja.sakib.pultusorm.core.PultusORM
-import ninja.sakib.pultusorm.core.PultusORMUpdater
-import ninja.sakib.pultusorm.core.PultusORMCondition as Condition
+import com.milogert.christmas.controllers.k_year
+import com.milogert.christmas.structures.*
 
-class WishlistDao(orm: PultusORM) {
-    var db = orm
+class WishlistDao() {
 
     // Create.
-    fun createItem(wli: WishlistItem) : Int {
-        if (db.save(wli)) {
-            val condition = Condition.Builder()
-                    .eq("owner", wli.owner)
-                    .and()
-                    .eq("text", wli.text)
-                    .build()
-            return (db.find(WishlistItem(), condition)[0] as WishlistItem).id
-        } else
-            return -1
-    }
-
-    fun claimItem(wishlistItem: WishlistItem, person: Person, year: Int) {
-        claimItem(wishlistItem.id, person.id, year = year)
+    fun createItem(ownerId: Int, text: String, year: Int = k_year) {
+        transaction {
+            return@transaction WishlistItem.new {
+                owner = Person.get(ownerId)
+                this.text = text
+                this.year = YearConfig.find { YearConfigs.year eq year }.first() // Should only be one.
+            }.id.value
+        }
     }
 
     fun claimItem(itemId: Int, claimerId: Int, year: Int) {
-        val condition = Condition.Builder().eq("id", itemId).build()
-
-        val updater: PultusORMUpdater = PultusORMUpdater.Builder()
-                .set("claimedBy", claimerId)
-                .set("year", year)
-                .condition(condition)
-                .build()
-        db.update(WishlistItem(), updater)
+        transaction {
+            val item = WishlistItem.get(itemId)
+            item.claimed = true
+            item.claimedBy = Person.get(claimerId)
+            item.year = YearConfig.find { YearConfigs.year eq year }.first() // Should only be one.
+        }
     }
 
-    // Read.
-    fun getPersonById(id: Int): List<Person> {
-        return db.find(Person(), ninja.sakib.pultusorm.core.PultusORMCondition.Builder().eq("id", id).build()).map { it as Person }
-    }
+//    // Read.
+//    fun getPersonById(id: Int): List<Person> {
+//        return db.find(Person(), ninja.sakib.pultusorm.core.PultusORMCondition.Builder().eq("id", id).build()).map { it as Person }
+//    }
 
-    // Update.
-    fun update(old: Person, new: Person) {
-        val condition = Condition.Builder()
-                .eq("id", old.id)
-                .build()
+//    // Update.
+//    fun update(old: Person, new: Person) {
+//        val condition = Condition.Builder()
+//                .eq("id", old.id)
+//                .build()
+//
+//        val updater: PultusORMUpdater = PultusORMUpdater.Builder()
+//                .set("name", new.name)
+//                .set("email", new.email)
+//                .condition(condition)
+//                .build()
+//        db.update(Person(), updater)
+//    }
 
-        val updater: PultusORMUpdater = PultusORMUpdater.Builder()
-                .set("name", new.name)
-                .set("email", new.email)
-                .condition(condition)
-                .build()
-        db.update(Person(), updater)
-    }
-
-    fun getWishlistByOwnerId(id: Int): List<WishlistItem> =
-            db.find(WishlistItem(), Condition.Builder().eq("id", id).build()).map { it as WishlistItem }
+    fun getWishlistByOwnerId(id: Int): Iterable<WishlistItem> =
+            WishlistItem.find { WishlistItems.owner eq id }
 
 
-    fun getWishlistByClaimedId(id: Int): List<WishlistItem> =
-            db.find(WishlistItem(), Condition.Builder().eq("claimedBy", id).build()).map { it as WishlistItem }
+    fun getWishlistByClaimedId(id: Int): Iterable<WishlistItem> =
+            WishlistItem.find { WishlistItems.claimedBy eq id }
 }

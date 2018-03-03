@@ -2,7 +2,6 @@ package com.milogert.christmas.controllers
 
 import com.milogert.christmas.daos.PersonDao
 import com.milogert.christmas.daos.WishlistDao
-import com.milogert.christmas.daos.orm
 import com.milogert.christmas.structures.Person
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.view.RedirectView
@@ -15,8 +14,8 @@ import java.util.*
 @RequestMapping("/person")
 class PersonController {
 
-    val personDao = PersonDao(orm)
-    val wishlistDao = WishlistDao(orm)
+    val personDao = PersonDao()
+    val wishlistDao = WishlistDao()
 
     val k_year = Calendar.getInstance().get(Calendar.YEAR)
 
@@ -30,17 +29,17 @@ class PersonController {
             System.out.println("Name is empty. This may fail.");
         }
 
-        var person = personDao.getOrCreatePerson(Person(name = name, email = email))
+        var person = personDao.getOrCreatePerson(name, email)
 
-        return RedirectView("/person/profile/" + person.name)
+        return RedirectView("/person/profile/" + person.id.value)
     }
 
     @GetMapping("/assign")
     fun assign(
             @RequestParam(value = "santa", defaultValue = "0") santa: Int,
             @RequestParam(value = "receiver", defaultValue = "0") receiver: Int
-    ) {
-        personDao.createReciever(santa, receiver, year = k_year)
+    ) : Iterable<Person.Render> {
+        return personDao.createReceiver(santa, receiver, year = k_year).map { x -> x.render() }.toList()
     }
 
     @GetMapping("/claim")
@@ -52,8 +51,11 @@ class PersonController {
     }
 
     @GetMapping("/all")
-    fun all() : List<Person> = personDao.getAllPeople()
+    fun all() : Iterable<Person.Render> = personDao.getAllPeople().map { x -> x.render() }.toList()
 
-    @GetMapping("/profile/{person_name}")
-    fun profile(@PathVariable person_name: String) : Person = personDao.getPersonByName(person_name)
+    @GetMapping("/profile/{id}")
+    fun profile(@PathVariable id: Int) : Person.Render = personDao.getPersonById(id).render()
+
+    @GetMapping("/profiles")
+    fun profiles(@PathVariable id: Int) : Person.Render = personDao.getPersonById(id).render()
 }
