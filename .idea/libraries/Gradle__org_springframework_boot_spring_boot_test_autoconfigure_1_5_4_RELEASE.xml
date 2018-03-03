@@ -3,7 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-test-autoconfigure/1.5.4.RELEASE/5c751eb6cfa58c86ba4ffc4c3334faf4331d5385/spring-boot-test-autoconfigure-1.5.4.RELEASE.jar!/" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-test-autoconfigure/1.5.4.RELEASE/fda6ae2abbed1f30e5b8cb088fb6bcc1419f4932/spring-boot-test-autoconfigure-1.5.4.RELEASE-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-test-autoconfigure/1.5.4.RELEASE/60e1eb66b4ea6cca3fa0cc035887641484320d66/spring-boot-test-autoconfigure-1.5.4.RELEASE-sources.jar!/" />
     </SOURCES>

@@ -3,7 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-test/1.5.4.RELEASE/a7a68089a6cf35db5587029e5c163466dadf7c5b/spring-boot-test-1.5.4.RELEASE.jar!/" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-test/1.5.4.RELEASE/9c568ab1b0c72eb5608f01e5c01062acbbf73dc7/spring-boot-test-1.5.4.RELEASE-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-test/1.5.4.RELEASE/27da5ef9e19f6568b01709ff128df35b31dec91e/spring-boot-test-1.5.4.RELEASE-sources.jar!/" />
     </SOURCES>
