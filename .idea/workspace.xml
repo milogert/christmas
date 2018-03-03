@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="403f58a1-a545-4053-9dd7-e42b66d6391c" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/WishlistController.kt" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/ChristmasApp.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/ChristmasApp.kt" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/PersonController.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/PersonController.kt" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/controllers/YearController.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/PersonDao.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/PersonDao.kt" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/WishlistDao.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/WishlistDao.kt" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/db.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/daos/db.kt" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/structures/DatabaseConfig.kt" afterPath="$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/structures/DatabaseConfig.kt" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -137,8 +129,8 @@
       <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1530">
-              <caret line="102" column="26" lean-forward="true" selection-start-line="102" selection-start-column="26" selection-end-line="102" selection-end-column="26" />
+            <state relative-caret-position="405">
+              <caret line="27" column="9" lean-forward="true" selection-start-line="27" selection-start-column="9" selection-end-line="27" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -170,8 +162,8 @@
             <state relative-caret-position="-1485">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding>
-                <marker date="1520104577522" expanded="true" signature="126951:126993" ph="..." />
-                <marker date="1520104577522" expanded="true" signature="126951:127024" ph="..." />
+                <marker date="1520104614971" expanded="true" signature="119491:119533" ph="..." />
+                <marker date="1520104614971" expanded="true" signature="119491:119564" ph="..." />
               </folding>
             </state>
           </provider>
@@ -1366,7 +1358,14 @@
       <option name="project" value="LOCAL" />
       <updated>1520104612827</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Backend changes&#10;&#10;- New: WishlistController.&#10;&#10;- Update: database structure.&#10;- Update: WishlistDao, PersonController, PersonDao.&#10;- Update: Added logging to all database transactions.&#10;&#10;- Remove: YearController as it does nothing.">
+      <created>1520104731723</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1520104731723</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1434,7 +1433,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Fixed the person dao&#10;&#10;- Fixed the startup process as well." />
     <MESSAGE value="Updated the gitignore to improve merging later" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated the gitignore to improve merging later" />
+    <MESSAGE value="Backend changes&#10;&#10;- New: WishlistController.&#10;&#10;- Update: database structure.&#10;- Update: WishlistDao, PersonController, PersonDao.&#10;- Update: Added logging to all database transactions.&#10;&#10;- Remove: YearController as it does nothing." />
+    <option name="LAST_COMMIT_MESSAGE" value="Backend changes&#10;&#10;- New: WishlistController.&#10;&#10;- Update: database structure.&#10;- Update: WishlistDao, PersonController, PersonDao.&#10;- Update: Added logging to all database transactions.&#10;&#10;- Remove: YearController as it does nothing." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1643,8 +1643,8 @@
         <state relative-caret-position="-1485">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1520104577522" expanded="true" signature="126951:126993" ph="..." />
-            <marker date="1520104577522" expanded="true" signature="126951:127024" ph="..." />
+            <marker date="1520104614971" expanded="true" signature="119491:119533" ph="..." />
+            <marker date="1520104614971" expanded="true" signature="119491:119564" ph="..." />
           </folding>
         </state>
       </provider>
@@ -1689,18 +1689,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1530">
-          <caret line="102" column="26" lean-forward="true" selection-start-line="102" selection-start-column="26" selection-end-line="102" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/backend/src/main/kotlin/com/milogert/christmas/structures/DatabaseConfig.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
           <caret line="30" column="72" lean-forward="false" selection-start-line="30" selection-start-column="72" selection-end-line="30" selection-end-column="72" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="27" column="9" lean-forward="true" selection-start-line="27" selection-start-column="9" selection-end-line="27" selection-end-column="9" />
           <folding />
         </state>
       </provider>
