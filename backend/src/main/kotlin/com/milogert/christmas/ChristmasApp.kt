@@ -1,4 +1,4 @@
-package com.milogert.christmas;
+package com.milogert.christmas
 
 import com.milogert.christmas.controllers.k_year
 import com.milogert.christmas.daos.name

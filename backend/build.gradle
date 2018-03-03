@@ -42,6 +42,12 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile("org.springframework.boot:spring-boot-devtools")
 
+    // https://mvnrepository.com/artifact/org.springframework/spring-web
+//    compile group: 'org.springframework', name: 'spring-web', version: '5.0.4.RELEASE'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+//    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.4'
+
     // Database.
     compile 'com.github.JetBrains:Exposed:0.9.1'
 

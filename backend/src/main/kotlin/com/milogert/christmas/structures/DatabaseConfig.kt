@@ -1,9 +1,9 @@
 package com.milogert.christmas.structures
 
-import com.milogert.christmas.structures.SantaReceivers.reference
-import org.jetbrains.exposed.dao.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.div
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.dao.EntityID
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.IntIdTable
 
 /**
  * Table.
@@ -26,9 +26,9 @@ class Person(id: EntityID<Int>) : IntEntity(id) {
     var name by People.name
     var email by People.email
 
-    var wishlist: Iterable<WishlistItem.Render> = ArrayList<WishlistItem.Render>()
-    var receivers: Iterable<Person.Render> = ArrayList<Person.Render>()
-    var claimedItems: Iterable<WishlistItem.Render> = ArrayList<WishlistItem.Render>()
+    var wishlist: Iterable<WishlistItem.Render> = ArrayList()
+    var receivers: Iterable<Person.Render> = ArrayList()
+    var claimedItems: Iterable<WishlistItem.Render> = ArrayList()
 
     data class Render(
             val id: Int,
@@ -125,33 +125,4 @@ class SantaReceiver(id: EntityID<Int>) : IntEntity(id) {
     var santaId by Person referencedOn SantaReceivers.santaId
     var receiverId by Person referencedOn SantaReceivers.receiverId
     var year by YearConfig referencedOn SantaReceivers.year
-}
-
-
-
-
-
-object Users : IntIdTable() {
-        val name = varchar("name", 50).index()
-        val city = reference("city", Cities)
-        val age = integer("age")
-}
-
-object Cities: IntIdTable() {
-        val name = varchar("name", 50)
-}
-
-class User(id: EntityID<Int>) : IntEntity(id) {
-        companion object : IntEntityClass<User>(Users)
-
-        var name by Users.name
-        var city by City referencedOn Users.city
-        var age by Users.age
-}
-
-class City(id: EntityID<Int>) : IntEntity(id) {
-        companion object : IntEntityClass<City>(Cities)
-
-        var name by Cities.name
-        val users by User referrersOn Users.city
 }

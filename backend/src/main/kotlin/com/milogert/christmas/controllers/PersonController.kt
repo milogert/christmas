@@ -1,11 +1,10 @@
 package com.milogert.christmas.controllers
 
 import com.milogert.christmas.daos.PersonDao
-import com.milogert.christmas.daos.WishlistDao
+import com.milogert.christmas.daos.year
 import com.milogert.christmas.structures.Person
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.view.RedirectView
-import java.util.*
 
 const val ep_person = "/person"
 const val ep_person_add = "/add"
@@ -22,9 +21,6 @@ const val ep_person_profile_id = "$ep_person_profile/{id}"
 class PersonController {
 
     val personDao = PersonDao()
-    val wishlistDao = WishlistDao()
-
-    val k_year = Calendar.getInstance().get(Calendar.YEAR)
 
     @GetMapping(ep_person_add)
     fun add(
@@ -33,7 +29,7 @@ class PersonController {
     ) : RedirectView {
         if (name.isEmpty() || email.isEmpty())
         {
-            System.out.println("Name is empty. This may fail.");
+            System.out.println("Name is empty. This may fail.")
         }
 
         val person = personDao.getOrCreatePerson(name, email)
@@ -57,7 +53,7 @@ class PersonController {
             @RequestParam(value = "santa", defaultValue = "0") santa: Int,
             @RequestParam(value = "receiver", defaultValue = "0") receiver: Int
     ) : Iterable<Person.Render> {
-        return personDao.createReceiver(santa, receiver, year = k_year).map(Person::render).toList()
+        return personDao.createReceiver(santa, receiver, year = year).map(Person::render).toList()
     }
 
     // TODO: Not working.

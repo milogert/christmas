@@ -1,11 +1,12 @@
 package com.milogert.christmas.controllers
 
-import com.milogert.christmas.daos.PersonDao
 import com.milogert.christmas.daos.WishlistDao
-import com.milogert.christmas.structures.Person
-import org.springframework.web.bind.annotation.*
+import com.milogert.christmas.daos.year
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.view.RedirectView
-import java.util.*
 
 const val ep_wishlist = "/wishlist"
 const val ep_wishlist_add = "/add"
@@ -19,10 +20,7 @@ const val ep_wishlist_unclaim = "/unclaim"
 @RequestMapping(ep_wishlist)
 class WishlistController {
 
-    val personDao = PersonDao()
     val wishlistDao = WishlistDao()
-
-    val k_year = Calendar.getInstance().get(Calendar.YEAR)
 
     @GetMapping(ep_wishlist_add)
     fun add(
@@ -32,7 +30,7 @@ class WishlistController {
     ) : RedirectView {
         var year_ = year
         if (year_ == 0)
-            year_ = k_year
+            year_ = com.milogert.christmas.daos.year
 
         var wishlistItem = wishlistDao.createItem(id, text, year = year_)
 
@@ -44,7 +42,7 @@ class WishlistController {
             @RequestParam(value = "santaId", defaultValue = "0") santaId: Int,
             @RequestParam(value = "wishlistItem", defaultValue = "0") wishlistItem: Int
     ) : RedirectView {
-        wishlistDao.claimItem(santaId, wishlistItem, year = k_year)
+        wishlistDao.claimItem(santaId, wishlistItem, year = year)
 
         return RedirectView("$ep_person$ep_person_profile/$santaId")
     }
@@ -54,7 +52,7 @@ class WishlistController {
             @RequestParam(value = "santaId", defaultValue = "0") santaId: Int,
             @RequestParam(value = "wishlistItem", defaultValue = "0") wishlistItem: Int
     ) : RedirectView {
-        wishlistDao.unclaimItem(santaId, wishlistItem, year = k_year)
+        wishlistDao.unclaimItem(santaId, wishlistItem, year = year)
 
         return RedirectView("$ep_person$ep_person_profile/$santaId")
     }

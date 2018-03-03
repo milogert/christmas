@@ -2,15 +2,14 @@ package com.milogert.christmas.daos
 
 import com.milogert.christmas.controllers.k_year
 import com.milogert.christmas.structures.*
-import org.jetbrains.exposed.sql.and
 
-class WishlistDao() {
+class WishlistDao {
 
     // Create.
-    fun createItem(ownerId: Int, text: String, year: Int = k_year) {
+    fun createItem(ownerId: Int, text: String, year: Int = com.milogert.christmas.daos.year) {
         transaction {
             return@transaction WishlistItem.new {
-                owner = Person.get(ownerId)
+                owner = Person[ownerId]
                 this.text = text
                 this.year = YearConfig.find { YearConfigs.year eq year }.first() // Should only be one.
             }.id.value
@@ -19,14 +18,14 @@ class WishlistDao() {
 
     fun claimItem(claimerId: Int, itemId: Int, year: Int) {
         transaction {
-            val item = WishlistItem.get(itemId)
+            val item = WishlistItem[itemId]
             item.claimed = true
-            item.claimedBy = Person.get(claimerId)
+            item.claimedBy = Person[claimerId]
             item.year = YearConfig.find { YearConfigs.year eq year }.first() // Should only be one.
         }
     }
 
-    fun unclaimItem(currentClaimerId: Int, itemId: Int, year: Int = k_year) = transaction {
+    fun unclaimItem(currentClaimerId: Int, itemId: Int, year: Int = com.milogert.christmas.daos.year) = transaction {
         val item = WishlistItem[itemId]
         val claimedBy = item.claimedBy ?: return@transaction
 

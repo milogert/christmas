@@ -4,46 +4,43 @@ import com.milogert.christmas.structures.*
 import org.jetbrains.exposed.sql.and
 import java.util.*
 
-class PersonDao() {
+class PersonDao {
     private val wishlistDao = WishlistDao()
+
+    fun getOrCreatePerson(name: String, email: String): Person =
+        try {
+            getPersonByName(name)
+        } catch (e: Exception)
+        {
+            createPerson(name, email)
+        }
 
     /**
      * Create person.
-     *
-     * @param person the person to create. This one probably lacks an id.
-     * @return a whole person.
      */
-    fun createPerson(name: String, email: String) : Person = transaction {
-         Person.new {
+    private fun createPerson(name: String, email: String) : Person = transaction {
+        Person.new {
             this.name = name
             this.email = email
         }
     }
 
-    fun getOrCreatePerson(name: String, email: String): Person {
-        // Is person in the database?
-        var ret: Person
-        try {
-            ret = getPersonByName(name)
-        } catch (e: Exception)
-        {
-            e.printStackTrace()
-            ret = createPerson(name, email)
-        }
-
-        return ret
-    }
-
     // Read.
-    fun getPersonByName(name: String, fill: Boolean = true): Person {
-        return getPersonById(transaction { Person.find { People.name eq name }.first().id.value }, fill = fill)
-    }
+    private fun getPersonByName(name: String, fill: Boolean = true) : Person =
+        getPersonById(transaction { Person.find { People.name eq name }.first().id.value }, fill = fill)
 
     /**
      * Gets a person by id. Optionally fills in the person based on other data.
      */
-    fun getPersonById(id: Int, fill: Boolean = true) = transaction {
-        val person = Person[id]
+    fun getPersonById(id: Int, fill: Boolean = true) : Person = transaction {
+        val person : Person
+
+        try {
+            person = Person[id]
+        } catch (e : IllegalStateException) {
+            println("Could not find $id in the database")
+            throw e
+        }
 
         if (fill) {
             person.wishlist = wishlistDao.getWishlistByOwnerId(person.id.value).map(WishlistItem::render)
@@ -83,13 +80,13 @@ class PersonDao() {
             }
         } else
         {
-            println("Found santa-reciever pair: $santaId - $receiverId")
+            println("Found santa-receiver pair: $santaId - $receiverId")
         }
 
         return@transaction Arrays.asList(getPersonById(santaId), getPersonById(receiverId))
     }
 
-    fun getReceiversBySanta(santaId: Int) : Iterable<Person> = transaction {
+    private fun getReceiversBySanta(santaId: Int) : Iterable<Person> = transaction {
         SantaReceiver.find { SantaReceivers.santaId eq santaId }.map { x -> x.receiverId }.toList()
     }
 
