@@ -6,7 +6,7 @@ import Html.Events exposing (on)
 import Html.Events.Extra exposing (targetValueIntParse)
 import Json.Decode
 import Json.Decode.Pipeline
-import Debug exposing (log)
+import Debug exposing (..)
 import Http exposing (Error)
 
 
@@ -20,20 +20,24 @@ type alias WishlistItem =
     , claimedBy : Int
     }
 
-type alias Model =
+
+type alias Person =
     { id : Int
     , name : String
     , email : String
-    , wishlistItems : List WishlistItem
+    , wishlist : List WishlistItem
+    , error : String
     }
 
-init : ( Model, Cmd Msg )
+
+init : ( Person, Cmd Msg )
 init =
     (
         { id = 0
         , name = ""
         , email = ""
-        , wishlistItems = []
+        , wishlist = []
+        , error = ""
         }
     , Cmd.none
     )
@@ -45,10 +49,10 @@ init =
 type Msg
     = NewUser
     | FoundId Int
-    | GetProfile (Result Http.Error Model)
+    | GetProfile (Result Http.Error Person)
 
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Person -> (Person, Cmd Msg)
 update msg model =
     case msg of
         FoundId newId ->
@@ -59,42 +63,47 @@ update msg model =
                     , getProfile model newId
                     )
         NewUser -> (model, Cmd.none)
-        GetProfile (Ok foundModel) ->
-            (
+        GetProfile (Ok foundPerson) ->
+            log "GetProfile Ok" (
                 { model
-                | id = foundModel.id
-                , name = foundModel.name
-                , email = foundModel.email
+                | id = foundPerson.id
+                , name = foundPerson.name
+                , email = foundPerson.email
+                , wishlist = foundPerson.wishlist
+                , error = ""
                 }
             , Cmd.none
             )
-        GetProfile (Err _) ->
-            (
+        GetProfile (Err err) ->
+            log "GetProfile Error" (
                 { model
                 | id = -1
                 , name = "None"
                 , email = "none@localhost"
+                , wishlist = []
+                , error = toString err
                 }
             , Cmd.none
             )
 
 
-getProfile : Model -> Int -> Cmd Msg
+getProfile : Person -> Int -> Cmd Msg
 getProfile model id =
     let
         url = "http://localhost:8080/person/profile/" ++ (toString id)
         request = Http.get (log "pulling profile" url) decodeProfile
     in
-        Http.send GetProfile request
+        Http.send GetProfile (log "GetProfile" request)
 
 
-decodeProfile : Json.Decode.Decoder Model
+decodeProfile : Json.Decode.Decoder Person
 decodeProfile =
-    Json.Decode.Pipeline.decode Model
+    Json.Decode.Pipeline.decode Person
         |> Json.Decode.Pipeline.required "id" (Json.Decode.int)
         |> Json.Decode.Pipeline.required "name" (Json.Decode.string)
         |> Json.Decode.Pipeline.required "email" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "wishlistItems" decodeWishlistItems
+        |> Json.Decode.Pipeline.required "wishlist" decodeWishlistItems
+        |> Json.Decode.Pipeline.optional "error" (Json.Decode.string) ""
 
 
 decodeWishlistItems : Json.Decode.Decoder (List WishlistItem)
@@ -108,13 +117,13 @@ decodeWishlistItem =
         |> Json.Decode.Pipeline.required "id" (Json.Decode.int)
         |> Json.Decode.Pipeline.required "text" (Json.Decode.string)
         |> Json.Decode.Pipeline.required "claimed" (Json.Decode.bool)
-        |> Json.Decode.Pipeline.required "claimedBy" (Json.Decode.int)
+        |> Json.Decode.Pipeline.optional "claimedBy" (Json.Decode.int) -1
 
 
 ---- VIEW ----
 
 
-view : Model -> Html Msg
+view : Person -> Html Msg
 view model =
     div []
         [ h1 [] [ text "Secret Santa" ]
@@ -126,26 +135,27 @@ view model =
             , Html.Attributes.min "0"
             ]
             []
+        , p [ id "err" ] [ text model.error ]
         , createOrDisplay model
         ]
 
 
-createOrDisplay : Model -> Html Msg
+createOrDisplay : Person -> Html Msg
 createOrDisplay model =
     case model.id of
         0 -> loginForm
         _ -> display model
 
 
-display : Model -> Html Msg
+display : Person -> Html Msg
 display model =
     div []
         [ h2 []
-            [ text ((log "name: " model.name) ++ " (")
-            , a [ href ("mailto:" ++ model.email) ] [text model.email ]
+            [ text ((log "name" model.name) ++ " (")
+            , a [ href ("mailto:" ++ (log "email" model.email)) ] [text model.email ]
             , text ")"
             ]
-        , div [] (renderWishlistItems model.wishlistItems)
+        , div [] (renderWishlistItems model.wishlist)
         ]
 
 
@@ -164,6 +174,7 @@ renderWishlistItem item =
         , text <| toString item.claimed
         ]
 
+
 loginForm : Html Msg
 loginForm =
     form
@@ -177,7 +188,7 @@ loginForm =
 ---- PROGRAM ----
 
 
-main : Program Never Model Msg
+main : Program Never Person Msg
 main =
     Html.program
         { view = view
