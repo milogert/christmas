@@ -1,7 +1,7 @@
 module Main exposing (..)
 
-import Html exposing (Html, text, div, h1, h2, img, form, input, button, a, p)
-import Html.Attributes exposing (src, action, placeholder, name, type_, id, defaultValue, min, href)
+import Html exposing (..)
+import Html.Attributes exposing (..)
 import Html.Events exposing (on)
 import Html.Events.Extra exposing (targetValueIntParse)
 import Json.Decode
@@ -21,7 +21,7 @@ type alias WishlistItem =
     }
 
 
-type alias Person =
+type alias Profile =
     { id : Int
     , name : String
     , email : String
@@ -30,14 +30,29 @@ type alias Person =
     }
 
 
-init : ( Person, Cmd Msg )
+type alias Model =
+    { me : Profile
+    , them : Profile
+    }
+
+
+init : ( Model, Cmd Msg )
 init =
     (
-        { id = 0
-        , name = ""
-        , email = ""
-        , wishlist = []
-        , error = ""
+        { me =
+            { id = 0
+            , name = ""
+            , email = ""
+            , wishlist = []
+            , error = ""
+            }
+        , them =
+            { id = 0
+            , name = ""
+            , email = ""
+            , wishlist = []
+            , error = ""
+            }
         }
     , Cmd.none
     )
@@ -48,57 +63,89 @@ init =
 
 type Msg
     = NewUser
-    | FoundId Int
-    | GetProfile (Result Http.Error Person)
+    | MyId Int
+    | TheirId Int
+    | GetProfile (Result Http.Error Profile)
 
 
-update : Msg -> Person -> (Person, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
-        FoundId newId ->
+        MyId newId ->
             case newId of
                 0 -> (model, Cmd.none)
                 _ ->
-                    ( { model | id = (log "id" newId) }
-                    , getProfile model newId
-                    )
+                    let
+                        nme = model.me
+                        nthem = model.them
+                    in
+                        ( { model | me = { nme | id = newId }, them = nthem }
+                        , getProfile model.me newId
+                        )
+        TheirId newId ->
+            case newId of
+                0 -> (model, Cmd.none)
+                _ ->
+                    let
+                        nme = model.me
+                        nthem = model.them
+                    in
+                        ( { model | me = nme, them = { nthem | id = newId } }
+                        , getProfile model.them newId
+                        )
         NewUser -> (model, Cmd.none)
         GetProfile (Ok foundPerson) ->
-            log "GetProfile Ok" (
-                { model
-                | id = foundPerson.id
-                , name = foundPerson.name
-                , email = foundPerson.email
-                , wishlist = foundPerson.wishlist
-                , error = ""
-                }
-            , Cmd.none
-            )
+            let
+                modelMe = model.me
+                modelThem = model.them
+            in
+                log "GetProfile Ok"
+                (
+                    { model
+                    | me =
+                        { modelMe
+                        | id = foundPerson.id
+                        , name = foundPerson.name
+                        , email = foundPerson.email
+                        , wishlist = foundPerson.wishlist
+                        , error = ""
+                        }
+                    }
+                , Cmd.none
+                )
         GetProfile (Err err) ->
-            log "GetProfile Error" (
-                { model
-                | id = -1
-                , name = "None"
-                , email = "none@localhost"
-                , wishlist = []
-                , error = toString err
-                }
-            , Cmd.none
-            )
+            let
+                modelMe = model.me
+                modelThem = model.them
+            in
+                log "GetProfile Error"
+                (
+                    { model
+                    | me =
+                        { modelMe
+                        | id = -1
+                        , name = "None"
+                        , email = "none@localhost"
+                        , wishlist = []
+                        , error = toString err
+                        }
+                    }
+                , Cmd.none
+                )
 
 
-getProfile : Person -> Int -> Cmd Msg
-getProfile model id =
+getProfile : Profile -> Int -> Cmd Msg
+getProfile profile id =
     let
-        url = "http://localhost:8080/person/profile/" ++ (toString id)
+        url = "http://192.168.0.50:8080/person/profile/" ++ (toString id)
         request = Http.get (log "pulling profile" url) decodeProfile
     in
         Http.send GetProfile (log "GetProfile" request)
 
 
-decodeProfile : Json.Decode.Decoder Person
+decodeProfile : Json.Decode.Decoder Profile
 decodeProfile =
-    Json.Decode.Pipeline.decode Person
+    Json.Decode.Pipeline.decode Profile
         |> Json.Decode.Pipeline.required "id" (Json.Decode.int)
         |> Json.Decode.Pipeline.required "name" (Json.Decode.string)
         |> Json.Decode.Pipeline.required "email" (Json.Decode.string)
@@ -123,50 +170,100 @@ decodeWishlistItem =
 ---- VIEW ----
 
 
-view : Person -> Html Msg
-view model =
-    div []
-        [ h1 [] [ text "Secret Santa" ]
-        , input
-            [ id "id"
-            , type_ "number"
-            , on "input" (Json.Decode.map FoundId targetValueIntParse)
-            , defaultValue "0"
-            , Html.Attributes.min "0"
+stylesheet =
+    let
+        tag = "link"
+        attrs =
+            [ attribute "rel"       "stylesheet"
+            , attribute "property"  "stylesheet"
+            , attribute "href"      "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
             ]
-            []
-        , p [ id "err" ] [ text model.error ]
-        , createOrDisplay model
-        ]
+        children = []
+    in 
+        node tag attrs children
 
 
-createOrDisplay : Person -> Html Msg
-createOrDisplay model =
-    case model.id of
+view : Model -> Html Msg
+view model =
+    let
+        inner = div
+            [ class "container" ]
+            [ row
+                [ fullCol [ h1 [] [ text "Secret Santa" ] ]
+                , halfCol
+                    [ p [] [ text "Me:" ]
+                    , input
+                        [ id "my-id"
+                        , type_ "number"
+                        , on "input" (Json.Decode.map MyId targetValueIntParse)
+                        , defaultValue "0"
+                        , Html.Attributes.min "0"
+                        ]
+                        []
+                    , p [ id "err" ] [ text model.me.error ]
+                    , createOrDisplay model.me
+                    ]
+                , halfCol
+                    [ p [] [ text "Profile:" ]
+                    , input
+                        [ id "their-id"
+                        , type_ "number"
+                        , on "input" (Json.Decode.map TheirId targetValueIntParse)
+                        , defaultValue "0"
+                        , Html.Attributes.min "0"
+                        ]
+                        []
+                    , p [ id "err" ] [ text model.them.error ]
+                    , display model.them
+                    ]
+                ]
+            ]
+    in
+        div [ id "outer" ] [ stylesheet, inner ]
+
+
+row : List (Html Msg) -> Html Msg
+row elements =
+    div [ class "row" ] elements
+
+
+fullCol : List (Html Msg) -> Html Msg
+fullCol elements =
+    div [ class "col-md-12" ] elements
+
+
+halfCol : List (Html Msg) -> Html Msg
+halfCol elements =
+    div [ class "col-md-6" ] elements
+
+
+createOrDisplay : Profile -> Html Msg
+createOrDisplay profile =
+    case profile.id of
         0 -> loginForm
-        _ -> display model
+        _ -> display profile
 
 
-display : Person -> Html Msg
-display model =
+display : Profile -> Html Msg
+display profile =
     div []
         [ h2 []
-            [ text ((log "name" model.name) ++ " (")
-            , a [ href ("mailto:" ++ (log "email" model.email)) ] [text model.email ]
+            [ text ((log "name" profile.name) ++ " (")
+            , a [ href ("mailto:" ++ (log "email" profile.email)) ] [text profile.email ]
             , text ")"
             ]
-        , div [] (renderWishlistItems model.wishlist)
+        , div [] [ renderWishlistItems profile.wishlist ]
         ]
 
 
-renderWishlistItems : List WishlistItem -> List (Html Msg)
+renderWishlistItems : List WishlistItem -> Html Msg
 renderWishlistItems items =
-    List.map renderWishlistItem items
+    ul [] (List.map renderWishlistItem items)
 
 
 renderWishlistItem : WishlistItem -> Html Msg
 renderWishlistItem item =
-    p []
+    li []
         [ text <| toString item.id
         , text ": "
         , text item.text
@@ -177,7 +274,7 @@ renderWishlistItem item =
 
 loginForm : Html Msg
 loginForm =
-    form
+    Html.form
         [ action "/profile/add" ]
         [ input [ placeholder "Name", name "name" ] []
         , input [ placeholder "Email", name "email" ] []
@@ -188,7 +285,7 @@ loginForm =
 ---- PROGRAM ----
 
 
-main : Program Never Person Msg
+main : Program Never Model Msg
 main =
     Html.program
         { view = view
