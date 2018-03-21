@@ -1,182 +1,42 @@
 module Main exposing (..)
 
+import Debug exposing (log)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (on)
+import Html.Events exposing (on, onClick, onInput)
 import Html.Events.Extra exposing (targetValueIntParse)
-import Json.Decode
-import Json.Decode.Pipeline
-import Debug exposing (..)
-import Http exposing (Error)
+import Json.Decode as JDec
+
+import Models exposing (..)
+import Update exposing (..)
 
 
----- MODEL ----
+
+---- PROGRAM ----
 
 
-type alias WishlistItem =
-    { id : Int
-    , text : String
-    , claimed : Bool
-    , claimedBy : Int
-    }
-
-
-type alias Profile =
-    { id : Int
-    , name : String
-    , email : String
-    , wishlist : List WishlistItem
-    , error : String
-    }
-
-
-type alias Model =
-    { me : Profile
-    , them : Profile
-    }
-
-
-init : ( Model, Cmd Msg )
-init =
-    (
-        { me =
-            { id = 0
-            , name = ""
-            , email = ""
-            , wishlist = []
-            , error = ""
-            }
-        , them =
-            { id = 0
-            , name = ""
-            , email = ""
-            , wishlist = []
-            , error = ""
-            }
+main : Program Never Model Msg
+main =
+    Html.program
+        { view = view
+        , init = Models.init
+        , update = Update.update
+        , subscriptions = always Sub.none
         }
-    , Cmd.none
-    )
 
-
----- UPDATE ----
-
-
-type Msg
-    = NewUser
-    | MyId Int
-    | TheirId Int
-    | GetProfile (Result Http.Error Profile)
-
-
-update : Msg -> Model -> (Model, Cmd Msg)
-update msg model =
-    case msg of
-        MyId newId ->
-            case newId of
-                0 -> (model, Cmd.none)
-                _ ->
-                    let
-                        nme = model.me
-                        nthem = model.them
-                    in
-                        ( { model | me = { nme | id = newId }, them = nthem }
-                        , getProfile model.me newId
-                        )
-        TheirId newId ->
-            case newId of
-                0 -> (model, Cmd.none)
-                _ ->
-                    let
-                        nme = model.me
-                        nthem = model.them
-                    in
-                        ( { model | me = nme, them = { nthem | id = newId } }
-                        , getProfile model.them newId
-                        )
-        NewUser -> (model, Cmd.none)
-        GetProfile (Ok foundPerson) ->
-            let
-                modelMe = model.me
-                modelThem = model.them
-            in
-                log "GetProfile Ok"
-                (
-                    { model
-                    | me =
-                        { modelMe
-                        | id = foundPerson.id
-                        , name = foundPerson.name
-                        , email = foundPerson.email
-                        , wishlist = foundPerson.wishlist
-                        , error = ""
-                        }
-                    }
-                , Cmd.none
-                )
-        GetProfile (Err err) ->
-            let
-                modelMe = model.me
-                modelThem = model.them
-            in
-                log "GetProfile Error"
-                (
-                    { model
-                    | me =
-                        { modelMe
-                        | id = -1
-                        , name = "None"
-                        , email = "none@localhost"
-                        , wishlist = []
-                        , error = toString err
-                        }
-                    }
-                , Cmd.none
-                )
-
-
-getProfile : Profile -> Int -> Cmd Msg
-getProfile profile id =
-    let
-        url = "http://192.168.0.50:8080/person/profile/" ++ (toString id)
-        request = Http.get (log "pulling profile" url) decodeProfile
-    in
-        Http.send GetProfile (log "GetProfile" request)
-
-
-decodeProfile : Json.Decode.Decoder Profile
-decodeProfile =
-    Json.Decode.Pipeline.decode Profile
-        |> Json.Decode.Pipeline.required "id" (Json.Decode.int)
-        |> Json.Decode.Pipeline.required "name" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "email" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "wishlist" decodeWishlistItems
-        |> Json.Decode.Pipeline.optional "error" (Json.Decode.string) ""
-
-
-decodeWishlistItems : Json.Decode.Decoder (List WishlistItem)
-decodeWishlistItems =
-    Json.Decode.list decodeWishlistItem
-
-
-decodeWishlistItem : Json.Decode.Decoder WishlistItem
-decodeWishlistItem =
-    Json.Decode.Pipeline.decode WishlistItem
-        |> Json.Decode.Pipeline.required "id" (Json.Decode.int)
-        |> Json.Decode.Pipeline.required "text" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "claimed" (Json.Decode.bool)
-        |> Json.Decode.Pipeline.optional "claimedBy" (Json.Decode.int) -1
 
 
 ---- VIEW ----
 
 
+stylesheet : Html msg
 stylesheet =
     let
         tag = "link"
         attrs =
             [ attribute "rel"       "stylesheet"
             , attribute "property"  "stylesheet"
-            , attribute "href"      "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+            , attribute "href"      "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
             ]
         children = []
     in 
@@ -190,31 +50,39 @@ view model =
             [ class "container" ]
             [ row
                 [ fullCol [ h1 [] [ text "Secret Santa" ] ]
+                , fullCol [ p [ id "err" ] [ text model.err ] ]
                 , halfCol
                     [ p [] [ text "Me:" ]
                     , input
                         [ id "my-id"
                         , type_ "number"
-                        , on "input" (Json.Decode.map MyId targetValueIntParse)
+                        , on "input" (JDec.map MyId targetValueIntParse)
                         , defaultValue "0"
                         , Html.Attributes.min "0"
+                        , class "form-control form-control-sm"
                         ]
                         []
-                    , p [ id "err" ] [ text model.me.error ]
-                    , createOrDisplay model.me
+                    , div [] (createOrDisplay MyProfile model.me)
                     ]
                 , halfCol
                     [ p [] [ text "Profile:" ]
+                    , select
+                        [ on "change" (JDec.map TheirId targetValueIntParse)
+                        , class "form-control form-control-sm"
+                        , placeholder "Other profiles"
+                        ]
+                        (mapAssignedOptions model.assignedPicker)
+                    {--
                     , input
                         [ id "their-id"
                         , type_ "number"
-                        , on "input" (Json.Decode.map TheirId targetValueIntParse)
+                        , on "input" (JDec.map TheirId targetValueIntParse)
                         , defaultValue "0"
                         , Html.Attributes.min "0"
                         ]
                         []
-                    , p [ id "err" ] [ text model.them.error ]
-                    , display model.them
+                    --}
+                    , display TheirProfile model.them
                     ]
                 ]
             ]
@@ -237,59 +105,148 @@ halfCol elements =
     div [ class "col-md-6" ] elements
 
 
-createOrDisplay : Profile -> Html Msg
-createOrDisplay profile =
-    case profile.id of
-        0 -> loginForm
-        _ -> display profile
+createOrDisplay : Who -> Profile -> List (Html Msg)
+createOrDisplay who profile =
+    let
+        validId = profile.id > 0
+    in
+        case validId of
+            False -> [ loginForm ]
+            True ->
+                [ display who profile
+                , div [] newWishlistInput
+                , claimedItems who profile
+                ]
 
 
-display : Profile -> Html Msg
-display profile =
-    div []
-        [ h2 []
-            [ text ((log "name" profile.name) ++ " (")
-            , a [ href ("mailto:" ++ (log "email" profile.email)) ] [text profile.email ]
-            , text ")"
+display : Who -> Profile -> Html Msg
+display who profile =
+    let
+        invalid = profile.id <= 0
+    in
+        case invalid of
+            True -> nothing
+            False -> div []
+                [ h2 []
+                    [ text (profile.name ++ " (")
+                    , a [ href ("mailto:" ++ profile.email) ] [text profile.email ]
+                    , text ")"
+                    ]
+                , h3 [] [ text "Wishlist" ]
+                , div [] [ renderWishlistItems who profile.wishlist False ]
+                ]
+
+
+mapAssignedOptions : List ProfileLite -> List (Html Msg)
+mapAssignedOptions entries =
+    option [ value "0" ] [] :: List.map mapAssignedOption entries
+
+
+mapAssignedOption : ProfileLite -> Html Msg
+mapAssignedOption entry =
+    option [ entry.id |> toString  |> value] [ text entry.name ]
+
+
+claimedItems : Who -> Profile -> Html Msg
+claimedItems who profile =
+    case who of
+        MyProfile ->
+            div []
+                [ h3 [] [ text "Claimed Items" ]
+                , renderClaimedItems profile.claimedItems
+                ]
+        TheirProfile -> nothing
+
+
+newWishlistInput : List (Html Msg)
+newWishlistInput =
+    [ div
+        [ class "input-group" ]
+        [ input
+            [ class "form-control form-control-sm"
+            , name "wishlistItem"
+            , onInput PossibleNewWishlistItem
+            ] []
+        , div
+            [ class "input-group-append" ]
+            [ button
+                [ class "btn btn-sm btn-outline-secondary"
+                , type_ "button"
+                , onClick SubmitNewWishlistItem
+                ]
+                [ text "Add Item" ]
             ]
-        , div [] [ renderWishlistItems profile.wishlist ]
+        ]
+    ]
+
+
+renderClaimedItems : List WishlistItem -> Html Msg
+renderClaimedItems items =
+    case items of
+        [] -> noItems "No claimed items."
+        _ -> renderWishlistItems MyProfile items True
+
+
+renderWishlistItems : Who -> List WishlistItem -> Bool -> Html Msg
+renderWishlistItems who items claimedItems =
+    case items of
+        [] -> noItems "No wishlist items! Enter some below"
+        _ -> div [] (List.map (renderWishlistItem who claimedItems) items)
+
+
+renderWishlistItem : Who -> Bool -> WishlistItem -> Html Msg
+renderWishlistItem who claimedItems item =
+    div [ class "row" ]
+        [ div [ class "col my-2" ] [ text (item.text ++ " (Owner: " ++ (toString item.owner) ++ ")") ]
+        , div [ class "col-md-auto" ] [ claimLink who item.claimed claimedItems item.id ]
         ]
 
 
-renderWishlistItems : List WishlistItem -> Html Msg
-renderWishlistItems items =
-    ul [] (List.map renderWishlistItem items)
+claimLink : Who -> Bool -> Bool -> Int -> Html Msg
+claimLink who claimed claimedItems id =
+    let
+        cl = [ "btn", "btn-sm" ]
+    in
+    case (who, claimed, claimedItems) of
+        (MyProfile, _, True) ->
+            button
+                [ onClick (UnclaimItem id)
+                , "btn-outline-danger" :: cl |> classesEnable |> classList
+                ]
+                [ text "Unclaim" ]
+        (TheirProfile, _, _) ->
+            button
+                [ onClick (ClaimItem id )
+                , "btn-outline-primary" :: cl |> classesEnable |> classList
+                , disabled claimed
+                ]
+                [ text "Claim" ]
+        _ -> nothing
 
-
-renderWishlistItem : WishlistItem -> Html Msg
-renderWishlistItem item =
-    li []
-        [ text <| toString item.id
-        , text ": "
-        , text item.text
-        , text ", claimed: "
-        , text <| toString item.claimed
-        ]
 
 
 loginForm : Html Msg
 loginForm =
     Html.form
         [ action "/profile/add" ]
-        [ input [ placeholder "Name", name "name" ] []
-        , input [ placeholder "Email", name "email" ] []
-        , button [ type_ "submit" ] [ text "Create" ]
+        [ input [ placeholder "Name", name "name", class "form-control" ] []
+        , input [ placeholder "Email", name "email", class "form-control" ] []
+        , button [ type_ "submit", class "form-control" ] [ text "Create" ]
         ]
 
 
----- PROGRAM ----
+nothing : Html Msg
+nothing = text ""
 
 
-main : Program Never Model Msg
-main =
-    Html.program
-        { view = view
-        , init = init
-        , update = update
-        , subscriptions = always Sub.none
-        }
+classesEnable : List String -> List (String, Bool)
+classesEnable list = List.map classEnable list
+
+
+classEnable : String -> (String, Bool)
+classEnable cls = (cls, True)
+
+
+noItems : String -> Html Msg
+noItems message =
+    div [ class "card text-center" ] [ div [ class "card-body" ] [ p [] [ text message ] ] ]
