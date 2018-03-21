@@ -10,6 +10,7 @@ const val ep_person = "/person"
 const val ep_person_add = "/add"
 const val ep_person_update = "/update"
 const val ep_person_assign = "/assign"
+const val ep_person_getAssigned = "/assigned"
 const val ep_person_profile = "/profile"
 const val ep_person_profile_id = "$ep_person_profile/{id}"
 
@@ -56,6 +57,12 @@ class PersonController {
         return personDao.createReceiver(santa, receiver, year = year).map(Person::render).toList()
     }
 
+
+    @GetMapping(ep_person_getAssigned)
+    fun getAssigned(@RequestParam(value = "santa", defaultValue = "0") santa: Int) : List<Map<String, Any>> {
+        return personDao.getAssigned(santa)
+    }
+
     // TODO: Not working.
     @GetMapping(ep_person_profile)
     fun all() : Iterable<Person.Render> = personDao.getAllPeople().map(Person::render).toList()
@@ -63,7 +70,8 @@ class PersonController {
     @GetMapping(ep_person_profile_id)
     fun profile(
             @PathVariable id: Int,
-            @RequestParam(value = "fill", defaultValue = "true") fill: Boolean
+            @RequestParam(value = "fill", defaultValue = "true") fill: Boolean,
+            @RequestParam(value = "me", defaultValue = "false") me: Boolean
     ) : Person.Render =
-            personDao.getPersonById(id, fill = fill).render()
+            personDao.getPersonById(id, fill = fill, me = me).render()
 }

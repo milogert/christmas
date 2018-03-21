@@ -68,14 +68,14 @@ class WishlistItem(id: EntityID<Int>) : IntEntity(id) {
 
     data class Render(
             val id: Int,
-            val owner: Person.Render,
+            val owner: Int,
             val text: String,
             val claimed: Boolean,
-            val claimedBy: Person.Render?,
+            val claimedBy: Int?,
             val year: Int
     )
     fun render() : WishlistItem.Render {
-        return WishlistItem.Render(this.id.value, this.owner.render(), this.text, this.claimed, this.claimedBy?.render(), this.year.year)
+        return WishlistItem.Render(this.id.value, this.owner.render().id, this.text, this.claimed, this.claimedBy?.render()?.id, this.year.year)
     }
 }
 

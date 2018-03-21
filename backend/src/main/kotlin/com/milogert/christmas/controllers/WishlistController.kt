@@ -44,7 +44,7 @@ class WishlistController {
     ) : RedirectView {
         wishlistDao.claimItem(santaId, wishlistItem, year = year)
 
-        return RedirectView("$ep_person$ep_person_profile/$santaId")
+        return RedirectView("$ep_person$ep_person_profile/$santaId?me=true")
     }
 
     @GetMapping(ep_wishlist_unclaim)
@@ -54,6 +54,6 @@ class WishlistController {
     ) : RedirectView {
         wishlistDao.unclaimItem(santaId, wishlistItem, year = year)
 
-        return RedirectView("$ep_person$ep_person_profile/$santaId")
+        return RedirectView("$ep_person$ep_person_profile/$santaId?me=true")
     }
 }

@@ -26,13 +26,13 @@ class PersonDao {
     }
 
     // Read.
-    private fun getPersonByName(name: String, fill: Boolean = true) : Person =
-        getPersonById(transaction { Person.find { People.name eq name }.first().id.value }, fill = fill)
+    private fun getPersonByName(name: String, fill: Boolean = true, me: Boolean = false) : Person =
+        getPersonById(transaction { Person.find { People.name eq name }.first().id.value }, fill = fill, me = me)
 
     /**
      * Gets a person by id. Optionally fills in the person based on other data.
      */
-    fun getPersonById(id: Int, fill: Boolean = true) : Person = transaction {
+    fun getPersonById(id: Int, fill: Boolean = true, me: Boolean = false) : Person = transaction {
         val person : Person
 
         try {
@@ -49,7 +49,9 @@ class PersonDao {
             person.receivers = getReceiversBySanta(person.id.value).map(Person::render)
 
             // Map the claimed items.
-            person.claimedItems = wishlistDao.getWishlistByClaimedId(person.id.value).map(WishlistItem::render)
+            if (me) {
+                person.claimedItems = wishlistDao.getWishlistByClaimedId(person.id.value).map(WishlistItem::render)
+            }
         }
 
         return@transaction person
@@ -84,6 +86,17 @@ class PersonDao {
         }
 
         return@transaction Arrays.asList(getPersonById(santaId), getPersonById(receiverId))
+    }
+
+    fun getAssigned(santaId: Int) : List<Map<String, Any>> = transaction {
+        val assignedIds = SantaReceiver
+                .find { SantaReceivers.santaId eq santaId }
+                .map { mapOf("name" to Person[it.receiverId.id].name, "id" to it.receiverId.id.value) }
+                .toList()
+        assignedIds + Person
+                .find { People.name notInList assignedIds.map { it["name"] }.toList() + listOf(Person[santaId].name) }
+                .map { mapOf("name" to it.name, "id" to it.id.value) }
+                .toList()
     }
 
     private fun getReceiversBySanta(santaId: Int) : Iterable<Person> = transaction {

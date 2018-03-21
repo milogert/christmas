@@ -1,6 +1,5 @@
 package com.milogert.christmas.daos
 
-import com.milogert.christmas.controllers.k_year
 import com.milogert.christmas.structures.*
 
 class WishlistDao {

@@ -18,7 +18,6 @@ class CorsFilter : Filter {
     }
 
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
-        println("Filtering headers")
         var hReq = request as HttpServletRequest
         var hRes = response as HttpServletResponse
 
