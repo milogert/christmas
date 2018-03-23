@@ -1,6 +1,7 @@
 module Models exposing (..)
 
 import Http
+import Navigation exposing (..)
 
 
 
@@ -15,10 +16,12 @@ type Msg
     | SubmitNewWishlistItem
     | ClaimItem Int
     | UnclaimItem Int
+    | RouteChanged Location
+    | ClearError
 
 
-init : ( Model, Cmd Msg )
-init =
+init : Location -> ( Model, Cmd Msg )
+init location =
     (
         { me = resetProfile
         , them = resetProfile
@@ -68,8 +71,8 @@ type Who = MyProfile | TheirProfile
 
 
 type Route
-    = Create
-    | DisplayProfile Int
+    = RouteCreate
+    | RouteMyProfile Int
     | NotFoundRoute
 
 

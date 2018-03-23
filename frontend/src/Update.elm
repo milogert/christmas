@@ -1,9 +1,11 @@
 module Update exposing (update)
 
 import Debug exposing (log)
+import Navigation exposing (..)
 
 import Models exposing (..)
 import Request exposing (..)
+import Routing exposing (..)
 
 
 
@@ -14,11 +16,9 @@ update msg model =
             case newId of
                 0 -> { model | me = resetProfile } ! []
                 _ -> model !
-                    [ getProfile MyProfile newId
-                    , getAssigned newId
-                    ]
+                    [ getProfile MyProfile newId ]
         UpdateTheirPicker (Ok mapGood) ->
-            { model | assignedPicker = (log "assigned map" (List.append model.me.receivers mapGood)), them = resetProfile } ! []
+            { model | assignedPicker = (log "assigned map" (List.append model.me.receivers mapGood)) } ! []
         UpdateTheirPicker (Err err) ->
             { model | assignedPicker = [], err = err |> toString } ! []
         TheirId newId ->
@@ -34,42 +34,37 @@ update msg model =
         GetMyProfile (Ok foundPerson) ->
             let
                 modelMe = model.me
+                np = log "GetMyProfile" foundPerson
             in
-                log "GetProfile Ok"
-                (
-                    { model
-                    | me =
-                        { modelMe
-                        | id = foundPerson.id
-                        , name = foundPerson.name
-                        , email = foundPerson.email
-                        , wishlist = foundPerson.wishlist
-                        , claimedItems = foundPerson.claimedItems
-                        , receivers = foundPerson.receivers
-                        }
+                { model
+                | me =
+                    { modelMe
+                    | id = np.id
+                    , name = np.name
+                    , email = np.email
+                    , wishlist = np.wishlist
+                    , claimedItems = np.claimedItems
+                    , receivers = np.receivers
                     }
-                , Cmd.none
-                )
+                }
+                ! [ getAssigned np.id ]
         GetMyProfile (Err err) ->
             { model | err = err |> toString } ! []
         GetTheirProfile (Ok foundPerson) ->
             let
                 modelThem = model.them
+                np = log "GetTheirProfile" foundPerson
             in
-                log "GetProfile Ok"
-                (
-                    { model
-                    | them =
-                        { modelThem
-                        | id = foundPerson.id
-                        , name = foundPerson.name
-                        , email = foundPerson.email
-                        , wishlist = foundPerson.wishlist
-                        , receivers = foundPerson.receivers
-                        }
+                { model
+                | them =
+                    { modelThem
+                    | id = np.id
+                    , name = np.name
+                    , email = np.email
+                    , wishlist = np.wishlist
+                    , receivers = np.receivers
                     }
-                , Cmd.none
-                )
+                } ! []
         GetTheirProfile (Err err) ->
             { model | err = err |> toString } ! []
 
@@ -104,3 +99,16 @@ update msg model =
                         [ unclaimItem model.me.id id
                         , getProfile TheirProfile model.them.id
                         ]
+
+        RouteChanged newLoc ->
+            let
+                route = parseLocation newLoc
+            in
+                case route of
+                    RouteMyProfile id ->
+                        model ! [ getProfile MyProfile id ]
+                    _ ->
+                        { model | me = resetProfile, them = resetProfile } ! []
+
+        ClearError ->
+            { model | err = "" } ! []

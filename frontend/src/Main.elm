@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (on, onClick, onInput)
 import Html.Events.Extra exposing (targetValueIntParse)
 import Json.Decode as JDec
+import Navigation
 
 import Models exposing (..)
 import Update exposing (..)
@@ -17,7 +18,7 @@ import Update exposing (..)
 
 main : Program Never Model Msg
 main =
-    Html.program
+    Navigation.program RouteChanged
         { view = view
         , init = Models.init
         , update = Update.update
@@ -50,7 +51,7 @@ view model =
             [ class "container" ]
             [ row
                 [ fullCol [ h1 [] [ text "Secret Santa" ] ]
-                , fullCol [ p [ id "err" ] [ text model.err ] ]
+                , displayErr model
                 , halfCol
                     [ p [] [ text "Me:" ]
                     , input
@@ -62,7 +63,7 @@ view model =
                         , class "form-control form-control-sm"
                         ]
                         []
-                    , div [] (createOrDisplay MyProfile model.me)
+                    , div [] (createOrDisplay model MyProfile model.me)
                     ]
                 , halfCol
                     [ p [] [ text "Profile:" ]
@@ -90,6 +91,19 @@ view model =
         div [ id "outer" ] [ stylesheet, inner ]
 
 
+displayErr : Model -> Html Msg
+displayErr model =
+    case model.err of
+        "" -> nothing
+        _ ->
+            fullCol
+                [ row
+                    [ div [ class "alert alert-danger col" ] [ text model.err ]
+                    , div [ class "col-md-auto" ] [ button [ class "btn btn-outline-danger", onClick ClearError ] [ text "ClearError" ] ]
+                    ]
+                ]
+
+
 row : List (Html Msg) -> Html Msg
 row elements =
     div [ class "row" ] elements
@@ -105,8 +119,8 @@ halfCol elements =
     div [ class "col-md-6" ] elements
 
 
-createOrDisplay : Who -> Profile -> List (Html Msg)
-createOrDisplay who profile =
+createOrDisplay : Model -> Who -> Profile -> List (Html Msg)
+createOrDisplay model who profile =
     let
         validId = profile.id > 0
     in
@@ -114,7 +128,7 @@ createOrDisplay who profile =
             False -> [ loginForm ]
             True ->
                 [ display who profile
-                , div [] newWishlistInput
+                , div [] (newWishlistInput model)
                 , claimedItems who profile
                 ]
 
@@ -158,21 +172,24 @@ claimedItems who profile =
         TheirProfile -> nothing
 
 
-newWishlistInput : List (Html Msg)
-newWishlistInput =
+newWishlistInput : Model -> List (Html Msg)
+newWishlistInput model =
     [ div
         [ class "input-group" ]
         [ input
             [ class "form-control form-control-sm"
             , name "wishlistItem"
             , onInput PossibleNewWishlistItem
-            ] []
+            , value model.wishlistItemHolder
+            ]
+            []
         , div
             [ class "input-group-append" ]
             [ button
                 [ class "btn btn-sm btn-outline-secondary"
                 , type_ "button"
                 , onClick SubmitNewWishlistItem
+                , model.wishlistItemHolder |> String.isEmpty |> disabled
                 ]
                 [ text "Add Item" ]
             ]
