@@ -43,15 +43,21 @@ class PersonDao {
         }
 
         if (fill) {
-            person.wishlist = wishlistDao.getWishlistByOwnerId(person.id.value).map(WishlistItem::render)
+            fill(person, me = me)
+        }
 
-            // Map the receivers.
-            person.receivers = getReceiversBySanta(person.id.value).map(Person::render)
+        return@transaction person
+    }
 
-            // Map the claimed items.
-            if (me) {
-                person.claimedItems = wishlistDao.getWishlistByClaimedId(person.id.value).map(WishlistItem::render)
-            }
+    fun fill(person: Person, me: Boolean = false) : Person = transaction {
+        person.wishlist = wishlistDao.getWishlistByOwnerId(person.id.value).map(WishlistItem::render)
+
+        // Map the receivers.
+        person.receivers = getReceiversBySanta(person.id.value).map(Person::render)
+
+        // Map the claimed items.
+        if (me) {
+            person.claimedItems = wishlistDao.getWishlistByClaimedId(person.id.value).map(WishlistItem::render)
         }
 
         return@transaction person
@@ -91,10 +97,10 @@ class PersonDao {
     fun getAssigned(santaId: Int) : List<Map<String, Any>> = transaction {
         val assignedIds = SantaReceiver
                 .find { SantaReceivers.santaId eq santaId }
-                .map { mapOf("name" to Person[it.receiverId.id].name, "id" to it.receiverId.id.value) }
+                .map { mapOf("name" to Person[it.receiverId.id].name + " (assigned)", "id" to it.receiverId.id.value) }
                 .toList()
         assignedIds + Person
-                .find { People.name notInList assignedIds.map { it["name"] }.toList() + listOf(Person[santaId].name) }
+                .find { People.id notInList assignedIds.map { it["id"] }.toList() + listOf(santaId) }
                 .map { mapOf("name" to it.name, "id" to it.id.value) }
                 .toList()
     }

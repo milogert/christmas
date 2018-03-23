@@ -27,7 +27,7 @@ class PersonController {
     fun add(
             @RequestParam(value = "name", defaultValue = "") name: String,
             @RequestParam(value = "email", defaultValue = "") email: String
-    ) : RedirectView {
+    ) : Person.Render {
         if (name.isEmpty() || email.isEmpty())
         {
             System.out.println("Name is empty. This may fail.")
@@ -35,7 +35,7 @@ class PersonController {
 
         val person = personDao.getOrCreatePerson(name, email)
 
-        return RedirectView("$ep_person$ep_person_profile/${person.id.value}")
+        return personDao.fill(person, true).render()
     }
 
     @GetMapping(ep_person_update)
