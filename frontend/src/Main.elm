@@ -9,6 +9,7 @@ import Json.Decode as JDec
 import Navigation
 
 import Models exposing (..)
+import Routing exposing (..)
 import Update exposing (..)
 
 
@@ -47,48 +48,60 @@ stylesheet =
 view : Model -> Html Msg
 view model =
     let
-        inner = div
-            [ class "container" ]
-            [ row
-                [ fullCol [ h1 [] [ text "Secret Santa" ] ]
-                , displayErr model
-                , halfCol
-                    [ p [] [ text "Me:" ]
-                    , input
-                        [ id "my-id"
-                        , type_ "number"
-                        , on "input" (JDec.map MyId targetValueIntParse)
-                        , defaultValue "0"
-                        , Html.Attributes.min "0"
-                        , class "form-control form-control-sm"
-                        ]
-                        []
-                    , div [] (createOrDisplay model MyProfile model.me)
+        header = row
+            [ div [ class "col" ] [ h1 [] [ text "Secret Santa" ] ]
+            , div [ class "col-md-auto my-auto" ]
+                [ input
+                    [ class "form-control form-control-sm"
+                    , type_ "number"
+                    , on "input" (JDec.map MyId targetValueIntParse)
+                    , defaultValue "0"
+                    , Html.Attributes.min "0"
+                    , model.me.id |> toString |> value
                     ]
-                , halfCol
-                    [ p [] [ text "Profile:" ]
-                    , select
-                        [ on "change" (JDec.map TheirId targetValueIntParse)
-                        , class "form-control form-control-sm"
-                        , placeholder "Other profiles"
-                        ]
-                        (mapAssignedOptions model.assignedPicker)
-                    {--
-                    , input
-                        [ id "their-id"
-                        , type_ "number"
-                        , on "input" (JDec.map TheirId targetValueIntParse)
-                        , defaultValue "0"
-                        , Html.Attributes.min "0"
-                        ]
-                        []
-                    --}
-                    , display TheirProfile model.them
+                    []
+                ]
+            , div [ class "col-md-2 my-auto" ]
+                [ select
+                    [ on "change" (JDec.map TheirId targetValueIntParse)
+                    , class "form-control form-control-sm"
+                    , placeholder "Other profiles"
                     ]
+                    (mapAssignedOptions model.assignedPicker)
                 ]
             ]
+        inner = row
+            [ displayErr model
+            , halfCol
+                [ display MyProfile model.me
+                , div [] (newWishlistInput model)
+                , claimedItems MyProfile model.me
+                ]
+            , halfCol
+                [ display TheirProfile model.them ]
+            ]
     in
-        div [ id "outer" ] [ stylesheet, inner ]
+        case model.route of
+            RouteMyProfile profileId ->
+                div [ id "outer" ]
+                    [ stylesheet
+                    , div [ class "container" ]
+                        [ header
+                        , hr [] []
+                        , displayErr model
+                        , inner
+                        ]
+                    ]
+            RouteCreate ->
+                div [ id "outer" ]
+                    [ stylesheet
+                    , div [ class "container" ]
+                        [ header
+                        , hr [] []
+                        , displayErr model
+                        , row [ loginForm model ]
+                        ]
+                    ]
 
 
 displayErr : Model -> Html Msg
@@ -117,20 +130,6 @@ fullCol elements =
 halfCol : List (Html Msg) -> Html Msg
 halfCol elements =
     div [ class "col-md-6" ] elements
-
-
-createOrDisplay : Model -> Who -> Profile -> List (Html Msg)
-createOrDisplay model who profile =
-    let
-        validId = profile.id > 0
-    in
-        case validId of
-            False -> [ loginForm ]
-            True ->
-                [ display who profile
-                , div [] (newWishlistInput model)
-                , claimedItems who profile
-                ]
 
 
 display : Who -> Profile -> Html Msg
@@ -242,13 +241,39 @@ claimLink who claimed claimedItems id =
 
 
 
-loginForm : Html Msg
-loginForm =
-    Html.form
-        [ action "/profile/add" ]
-        [ input [ placeholder "Name", name "name", class "form-control" ] []
-        , input [ placeholder "Email", name "email", class "form-control" ] []
-        , button [ type_ "submit", class "form-control" ] [ text "Create" ]
+loginForm : Model -> Html Msg
+loginForm model =
+    div
+        [ class "col" ]
+        [ div [ class "form-row" ]
+            [ div [ class "col" ]
+                [ div [ class "form-group" ]
+                    [ input
+                        [ placeholder "Name"
+                        , name "name"
+                        , class "form-control"
+                        , onInput NewUserName
+                        , value model.newUser.name
+                        ]
+                        []
+                    ]
+                ]
+            , div [ class "col" ]
+                [ div [ class "form-group" ]
+                    [ input
+                        [ placeholder "Email"
+                        , name "email"
+                        , class "form-control"
+                        , onInput NewUserEmail
+                        , value model.newUser.email
+                        ]
+                        []
+                    ]
+                ]
+            ]
+        , div [ class "form-row" ]
+            [ div [ class "col" ] [ button [ class "btn btn-primary form-control", onClick NewUser ] [ text "Create" ] ]
+            ]
         ]
 
 

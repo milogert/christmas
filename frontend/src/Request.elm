@@ -4,15 +4,26 @@ import Debug exposing (log)
 import Http exposing (Error)
 import Json.Decode as JDec
 import Json.Decode.Pipeline as JPipe
+import Navigation exposing (..)
 
 import Models exposing (..)
+import Routing exposing (..)
 
+
+
+createNewUser : String -> String -> Cmd Msg
+createNewUser name email =
+    let
+        url = "http://localhost:8080/person/add?name=" ++ name ++ "&email=" ++ email
+        request = Http.get (log "adding profile" url) decodeProfile
+    in
+        Http.send RedirectRoute request
 
 
 getProfile : Who -> Int -> Cmd Msg
 getProfile who id =
     let
-        url = "http://192.168.0.50:8080/person/profile/" ++ (toString id) ++ "?me=" ++ (who |> whoToMe |> toString)
+        url = "http://localhost:8080/person/profile/" ++ (toString id) ++ "?me=" ++ (who |> whoToMe |> toString)
         request = Http.get (log "pulling profile" url) decodeProfile
     in
         case who of
@@ -20,10 +31,19 @@ getProfile who id =
             TheirProfile -> Http.send GetTheirProfile request
 
 
+getProfileFromRoute : Who -> Route -> Cmd Msg
+getProfileFromRoute who route =
+    case route of
+        RouteCreate ->
+            newUrl "/#/"
+        RouteMyProfile id ->
+            getProfile MyProfile id
+
+
 getAssigned : Int -> Cmd Msg
 getAssigned id =
     let
-        url = "http://192.168.0.50:8080/person/assigned?santa=" ++ (id |> toString)
+        url = "http://localhost:8080/person/assigned?santa=" ++ (id |> toString)
         request = Http.get (log "pulling assigned" url) (JDec.list decodeProfileLite)
     in
         Http.send UpdateTheirPicker request
@@ -32,7 +52,7 @@ getAssigned id =
 submitWishlistItem : Int -> String -> Cmd Msg
 submitWishlistItem id text =
     let
-        url = "http://192.168.0.50:8080/wishlist/add?id=" ++ (toString id) ++ "&text=" ++ text
+        url = "http://localhost:8080/wishlist/add?id=" ++ (toString id) ++ "&text=" ++ text
         request = Http.get url decodeProfile
     in
         Http.send GetMyProfile (log "GetProfile" request)
@@ -41,7 +61,7 @@ submitWishlistItem id text =
 claimItem : Int -> Int -> Cmd Msg
 claimItem profileId itemId =
     let
-        url = "http://192.168.0.50:8080/wishlist/claim?santaId=" ++ (toString profileId) ++ "&wishlistItem=" ++ (toString itemId)
+        url = "http://localhost:8080/wishlist/claim?santaId=" ++ (toString profileId) ++ "&wishlistItem=" ++ (toString itemId)
         request = Http.get url decodeProfile
     in
         Http.send GetMyProfile (log "claimItem" request)
@@ -50,7 +70,7 @@ claimItem profileId itemId =
 unclaimItem : Int -> Int -> Cmd Msg
 unclaimItem profileId itemId =
     let
-        url = "http://192.168.0.50:8080/wishlist/unclaim?santaId=" ++ (toString profileId) ++ "&wishlistItem=" ++ (toString itemId)
+        url = "http://localhost:8080/wishlist/unclaim?santaId=" ++ (toString profileId) ++ "&wishlistItem=" ++ (toString itemId)
         request = Http.get url decodeProfile
     in
         Http.send GetMyProfile (log "unclaimItem" request)

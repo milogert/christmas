@@ -2,11 +2,16 @@ module Models exposing (..)
 
 import Http
 import Navigation exposing (..)
+import Task exposing (Task)
+
+import Routing exposing (..)
 
 
 
 type Msg
-    = NewUser
+    = NewUserName String
+    | NewUserEmail String
+    | NewUser
     | MyId Int
     | UpdateTheirPicker (Result Http.Error (List ProfileLite))
     | TheirId Int
@@ -16,28 +21,33 @@ type Msg
     | SubmitNewWishlistItem
     | ClaimItem Int
     | UnclaimItem Int
+    | RedirectRoute (Result Http.Error Profile)
     | RouteChanged Location
     | ClearError
 
 
 init : Location -> ( Model, Cmd Msg )
 init location =
-    (
+    let
+        route = location |> parseLocation
+    in
         { me = resetProfile
         , them = resetProfile
+        , newUser = NewUserData "" ""
         , wishlistItemHolder = ""
         , assignedPicker = []
+        , route = route
         , err = ""
-        }
-    , Cmd.none
-    )
+        } ! [ Task.succeed location |> Task.perform RouteChanged ]
 
 
 type alias Model =
     { me : Profile
     , them : Profile
+    , newUser : NewUserData
     , wishlistItemHolder : String
     , assignedPicker : List ProfileLite
+    , route : Route
     , err : String
     }
 
@@ -58,6 +68,12 @@ type alias Profile =
     }
 
 
+type alias NewUserData =
+    { name : String
+    , email : String
+    }
+
+
 type alias WishlistItem =
     { id : Int
     , owner : Int
@@ -68,12 +84,6 @@ type alias WishlistItem =
 
 
 type Who = MyProfile | TheirProfile
-
-
-type Route
-    = RouteCreate
-    | RouteMyProfile Int
-    | NotFoundRoute
 
 
 -- UTILITIES.

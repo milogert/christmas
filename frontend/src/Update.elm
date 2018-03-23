@@ -12,15 +12,17 @@ import Routing exposing (..)
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
+        NewUserName name ->
+            { model | newUser = name |> asNewUserNameIn model.newUser } ! []
+        NewUserEmail email ->
+            { model | newUser = email |> asNewUserEmailIn model.newUser } ! []
+        NewUser ->
+            { model | newUser = NewUserData "" "" } ! [ createNewUser model.newUser.name model.newUser.email ]
+
         MyId newId ->
-            case newId of
-                0 -> { model | me = resetProfile } ! []
-                _ -> model !
-                    [ getProfile MyProfile newId ]
-        UpdateTheirPicker (Ok mapGood) ->
-            { model | assignedPicker = (log "assigned map" (List.append model.me.receivers mapGood)) } ! []
-        UpdateTheirPicker (Err err) ->
-            { model | assignedPicker = [], err = err |> toString } ! []
+            case (log "my id changed" newId) of
+                0 -> model ! [ newUrl "#" ]
+                _ -> model ! [ newUrl ("#" ++ toString newId) ]
         TheirId newId ->
             let
                 zero = newId <= 0
@@ -30,7 +32,12 @@ update msg model =
                     (True, _) -> { model | them = resetProfile } ! []
                     (_, True) -> { model | err = "Cannot select same id" } ! []
                     _ -> model ! [ getProfile TheirProfile newId ]
-        NewUser -> (model, Cmd.none)
+
+        UpdateTheirPicker (Ok mapGood) ->
+            { model | assignedPicker = (log "assigned map" mapGood) } ! []
+        UpdateTheirPicker (Err err) ->
+            { model | assignedPicker = [], err = err |> toString } ! []
+
         GetMyProfile (Ok foundPerson) ->
             let
                 modelMe = model.me
@@ -49,7 +56,7 @@ update msg model =
                 }
                 ! [ getAssigned np.id ]
         GetMyProfile (Err err) ->
-            { model | err = err |> toString } ! []
+            { model | err = err |> toString } ! [ newUrl "#" ]
         GetTheirProfile (Ok foundPerson) ->
             let
                 modelThem = model.them
@@ -74,18 +81,10 @@ update msg model =
             { model | wishlistItemHolder = "" } !
             [ submitWishlistItem model.me.id model.wishlistItemHolder ]
         ClaimItem id ->
-            let
-                theirIdInvalid = model.them.id <= 0
-            in
-                case theirIdInvalid of
-                    True ->
-                        model !
-                        [ claimItem model.me.id id ]
-                    False ->
-                        model !
-                        [ claimItem model.me.id id
-                        , getProfile TheirProfile model.them.id
-                        ]
+            model !
+            [ claimItem model.me.id id
+            , getProfile TheirProfile model.them.id
+            ]
         UnclaimItem id ->
             let
                 theirIdInvalid = model.them.id <= 0
@@ -100,15 +99,49 @@ update msg model =
                         , getProfile TheirProfile model.them.id
                         ]
 
+        RedirectRoute (Ok profile) ->
+            model ! [ newUrl ("#" ++ toString profile.id) ]
+        RedirectRoute (Err err) ->
+            { model | err = toString err } ! []
         RouteChanged newLoc ->
             let
-                route = parseLocation newLoc
+                route = log "RouteChanged" (parseLocation newLoc)
             in
                 case route of
                     RouteMyProfile id ->
-                        model ! [ getProfile MyProfile id ]
+                        { model | route = route, them = resetProfile } ! [ getProfile MyProfile id ]
                     _ ->
-                        { model | me = resetProfile, them = resetProfile } ! []
+                        { model | route = RouteCreate, me = resetProfile, them = resetProfile } ! [ ]
 
         ClearError ->
             { model | err = "" } ! []
+
+
+-- Helpers.
+
+
+asNewUserIn : Model -> NewUserData -> Model
+asNewUserIn = flip setNewUserData
+
+
+asNewUserNameIn : NewUserData -> String -> NewUserData
+asNewUserNameIn = flip setNewUserName
+
+
+asNewUserEmailIn : NewUserData -> String -> NewUserData
+asNewUserEmailIn = flip setNewUserEmail
+
+
+-- Trash helpers.
+
+
+setNewUserData : NewUserData -> Model -> Model
+setNewUserData data model = { model | newUser = data }
+
+
+setNewUserName : String -> NewUserData -> NewUserData
+setNewUserName name data = { data | name = name }
+
+
+setNewUserEmail : String -> NewUserData -> NewUserData
+setNewUserEmail email data = { data | email = email }
