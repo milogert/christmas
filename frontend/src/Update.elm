@@ -110,11 +110,20 @@ update msg model =
                 case route of
                     RouteMyProfile id ->
                         { model | route = route, them = resetProfile } ! [ getProfile MyProfile id ]
+                    RouteAdmin ->
+                        { model | route = route } ! []
                     _ ->
                         { model | route = RouteCreate, me = resetProfile, them = resetProfile } ! [ ]
 
         ClearError ->
             { model | err = "" } ! []
+
+        MakePairs ->
+            model ! [ makePairsRequest ]
+        PairsMade (Ok _) ->
+            model ! [ newUrl "#" ]
+        PairsMade (Err err) ->
+            { model | err = err |> toString } ! [ newUrl "#admin" ]
 
 
 -- Helpers.

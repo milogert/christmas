@@ -9,21 +9,34 @@ import Routing exposing (..)
 
 
 type Msg
+    -- New User
     = NewUserName String
     | NewUserEmail String
     | NewUser
+
+    -- Profiles
     | MyId Int
     | UpdateTheirPicker (Result Http.Error (List ProfileLite))
     | TheirId Int
     | GetMyProfile (Result Http.Error Profile)
     | GetTheirProfile (Result Http.Error Profile)
+
+    -- Wishlist Items
     | PossibleNewWishlistItem String
     | SubmitNewWishlistItem
     | ClaimItem Int
     | UnclaimItem Int
+
+    -- Routing
     | RedirectRoute (Result Http.Error Profile)
     | RouteChanged Location
+
+    -- Misc
     | ClearError
+
+    -- Admin
+    | MakePairs
+    | PairsMade (Result Http.Error String)
 
 
 init : Location -> ( Model, Cmd Msg )

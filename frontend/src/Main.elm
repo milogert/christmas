@@ -8,9 +8,11 @@ import Html.Events.Extra exposing (targetValueIntParse)
 import Json.Decode as JDec
 import Navigation
 
+import Admin exposing (..)
 import Models exposing (..)
 import Routing exposing (..)
 import Update exposing (..)
+import View.Utils exposing (..)
 
 
 
@@ -85,51 +87,28 @@ view model =
             RouteMyProfile profileId ->
                 div [ id "outer" ]
                     [ stylesheet
-                    , div [ class "container" ]
+                    , container
                         [ header
                         , hr [] []
                         , displayErr model
                         , inner
                         ]
                     ]
+            RouteAdmin ->
+                div [ id "outer" ]
+                    [ stylesheet
+                    , container [ adminPanel model ]
+                    ]
             RouteCreate ->
                 div [ id "outer" ]
                     [ stylesheet
-                    , div [ class "container" ]
+                    , container
                         [ header
                         , hr [] []
                         , displayErr model
                         , row [ loginForm model ]
                         ]
                     ]
-
-
-displayErr : Model -> Html Msg
-displayErr model =
-    case model.err of
-        "" -> nothing
-        _ ->
-            fullCol
-                [ row
-                    [ div [ class "alert alert-danger col" ] [ text model.err ]
-                    , div [ class "col-md-auto" ] [ button [ class "btn btn-outline-danger", onClick ClearError ] [ text "ClearError" ] ]
-                    ]
-                ]
-
-
-row : List (Html Msg) -> Html Msg
-row elements =
-    div [ class "row" ] elements
-
-
-fullCol : List (Html Msg) -> Html Msg
-fullCol elements =
-    div [ class "col-md-12" ] elements
-
-
-halfCol : List (Html Msg) -> Html Msg
-halfCol elements =
-    div [ class "col-md-6" ] elements
 
 
 display : Who -> Profile -> Html Msg
@@ -152,7 +131,7 @@ display who profile =
 
 mapAssignedOptions : List ProfileLite -> List (Html Msg)
 mapAssignedOptions entries =
-    option [ value "0" ] [] :: List.map mapAssignedOption entries
+    option [ value "0" ] [ text "Other Participants" ] :: List.map mapAssignedOption entries
 
 
 mapAssignedOption : ProfileLite -> Html Msg
@@ -275,10 +254,6 @@ loginForm model =
             [ div [ class "col" ] [ button [ class "btn btn-primary form-control", onClick NewUser ] [ text "Create" ] ]
             ]
         ]
-
-
-nothing : Html Msg
-nothing = text ""
 
 
 classesEnable : List String -> List (String, Bool)

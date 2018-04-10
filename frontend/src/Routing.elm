@@ -9,12 +9,15 @@ import UrlParser exposing (..)
 type Route
     = RouteCreate
     | RouteMyProfile Int
+    | RouteAdmin
 
 
 route : Parser (Route -> a) a
 route =
     oneOf
-        [ map RouteMyProfile (int) ]
+        [ map RouteMyProfile (int)
+        , map RouteAdmin (s "admin")
+        ]
 
 
 parseLocation : Location -> Route

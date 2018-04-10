@@ -35,9 +35,10 @@ getProfileFromRoute : Who -> Route -> Cmd Msg
 getProfileFromRoute who route =
     case route of
         RouteCreate ->
-            newUrl "/#/"
+            newUrl "#"
         RouteMyProfile id ->
             getProfile MyProfile id
+        RouteAdmin -> newUrl "#admin"
 
 
 getAssigned : Int -> Cmd Msg
@@ -74,6 +75,15 @@ unclaimItem profileId itemId =
         request = Http.get url decodeProfile
     in
         Http.send GetMyProfile (log "unclaimItem" request)
+
+
+makePairsRequest : Cmd Msg
+makePairsRequest =
+    let
+        url = "http://localhost:8080/pair"
+        request = Http.getString url
+    in
+        Http.send PairsMade (log "unclaimItem" request)
 
 
 -- UTILITIES.
